@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brandia App — Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.13);
+  --text: #1a1c22;
+  --muted: #8a8f9e;
+  --done-bg: #edfaf3; --done-border: #6edda8; --done-text: #0a7a45;
+  --progress-bg: #eaf2ff; --progress-border: #7ab8f5; --progress-text: #1558b0;
+  --blocked-bg: #fff7ec; --blocked-border: #f5c06a; --blocked-text: #a05f08;
+  --pending-bg: #f2f0ff; --pending-border: #b0a6f0; --pending-text: #5344b5;
+  --today: #0a7a45;
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 48px 32px; }
+.container { max-width: 980px; margin: 0 auto; }
+
+.header { margin-bottom: 40px; opacity: 0; animation: fadeUp 0.5s ease forwards; }
+.header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: var(--today); background: rgba(10,122,69,0.08); border: 1px solid rgba(10,122,69,0.2); border-radius: 4px; padding: 3px 8px; text-transform: uppercase; }
+h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+.subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 36px; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
+.summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.sc-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
+.sc-value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.sc-done { color: var(--done-text); } .sc-progress { color: var(--progress-text); } .sc-blocked { color: var(--blocked-text); } .sc-pending { color: var(--pending-text); }
+
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; }
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.timeline-wrap { position: relative; }
+.timeline-header { display: grid; grid-template-columns: 215px 1fr; margin-bottom: 6px; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+.date-cols { display: grid; grid-template-columns: repeat(var(--cols),1fr); }
+.date-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: center; }
+.date-label.today-label { color: var(--today); font-weight: 500; }
+
+.tl-row { display: grid; grid-template-columns: 215px 1fr; align-items: center; min-height: 54px; border-top: 1px solid var(--border); opacity: 0; animation: fadeUp 0.4s ease forwards; }
+.tl-row:last-child { border-bottom: 1px solid var(--border); }
+.row-label { font-size: 13px; color: #2a2c34; padding: 10px 20px 10px 0; line-height: 1.3; }
+.row-label small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+.bar-area { position: relative; height: 54px; }
+.grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); z-index: 0; }
+.grid-line.today-line { background: rgba(10,122,69,0.3); }
+
+.bar { position: absolute; top: 50%; transform: translateY(-50%); height: 28px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 500; white-space: nowrap; z-index: 2; border: 1px solid; cursor: default; transition: filter 0.2s; clip-path: inset(0 100% 0 0); animation: barIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+.bar:hover { filter: brightness(0.95); }
+.bar.done     { background: var(--done-bg);     border-color: var(--done-border);     color: var(--done-text); }
+.bar.progress { background: var(--progress-bg); border-color: var(--progress-border); color: var(--progress-text); }
+.bar.blocked  { background: var(--blocked-bg);  border-color: var(--blocked-border);  color: var(--blocked-text); border-style: dashed; }
+.bar.pending  { background: var(--pending-bg);  border-color: var(--pending-border);  color: var(--pending-text); border-style: dashed; opacity: 0.75; }
+
+.pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--progress-text); margin-right: 7px; flex-shrink: 0; animation: pulse 1.6s ease-in-out infinite; }
+.dot { width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; }
+
+.today-badge { position: absolute; top: -20px; left: 0; transform: translateX(-50%); font-family: 'DM Mono', monospace; font-size: 10px; color: var(--today); background: rgba(10,122,69,0.08); border: 1px solid rgba(10,122,69,0.2); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
+
+.alert-block { margin-top: 28px; padding: 18px 22px; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; display: flex; align-items: flex-start; gap: 16px; opacity: 0; animation: fadeUp 0.5s ease 0.7s forwards; }
+.alert-icon { width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0; background: rgba(240,165,58,0.1); border: 1px solid rgba(240,165,58,0.25); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.alert-text h3 { font-size: 13px; font-weight: 600; color: var(--blocked-text); margin-bottom: 5px; }
+.alert-text p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.alert-text b { color: #6b4a00; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+@keyframes barIn { to { clip-path: inset(0 0% 0 0); } }
+@media (max-width:640px) { .summary{grid-template-columns:repeat(2,1fr)} body{padding:24px 16px} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-top"><span class="tag">Brandia</span></div>
+    <h1>App Development — Timeline</h1>
+    <p class="subtitle">Hoy: 28 de abril, 2025 &nbsp;&middot;&nbsp; Inicio config apps: 24 de marzo, 2025</p>
+  </div>
+
+  <div class="summary">
+    <div class="summary-card"><div class="sc-label">Completado</div><div class="sc-value sc-done">5 / 13</div></div>
+    <div class="summary-card"><div class="sc-label">En progreso</div><div class="sc-value sc-progress">4 / 17</div></div>
+    <div class="summary-card"><div class="sc-label">Bloqueante</div><div class="sc-value sc-blocked">2 / 17</div></div>
+    <div class="summary-card"><div class="sc-label">Pendiente</div><div class="sc-value sc-pending">7 / 17</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--done-text)"></div>Listo</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--progress-text)"></div>En progreso</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blocked-text)"></div>Bloqueante</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pending-text)"></div>Pendiente</div>
+  </div>
+
+  <div class="timeline-wrap" id="timeline"></div>
+
+  <div class="alert-block">
+    <div class="alert-icon">&#9888;</div>
+    <div class="alert-text">
+      <h3>2 temas criticos activos</h3>
+      <p>
+        <b>Coordinación pendiente: Víctor Rojas &harr; Leo</b> &mdash; Actualizar datos reales, validar carritos, quitar warnings y vincular tiendas con distribuidoras.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+var START = new Date('2025-03-24');
+var TODAY = new Date('2025-04-28');
+var END   = new Date('2025-05-26');
+
+var TASKS = [
+  { label:'Beta Android',            sub:'24 mar &rarr; 28 mar',                    start:new Date('2025-03-24'), end:new Date('2025-03-28'), status:'done',     text:'&#10003; Listo' },
+  { label:'Beta iOS',                sub:'28 mar &rarr; 7 abr',                     start:new Date('2025-03-28'), end:new Date('2025-04-14'), status:'done',     text:'&#10003; Lista y subida' },
+  { label:'Beta testers habilitados', sub:'Correos enviados &mdash; Victor Rojas los agrega', start:new Date('2025-04-07'), end:new Date('2025-04-21'), status:'done', text:'&#10003; Enviados' },
+  { label:'Ficha Play Store',        sub:'Revisi&oacute;n Jue 30 abr / Vie 1 may &mdash; Victor Rojas', start:new Date('2025-04-21'), end:new Date('2025-04-30'), status:'progress', text:'Jue 30 / Vie 1' },
+  { label:'Ficha App Store',         sub:'Revisi&oacute;n Jue 30 abr / Vie 1 may &mdash; Victor Rojas', start:new Date('2025-04-21'), end:new Date('2025-04-30'), status:'progress', text:'Jue 30 / Vie 1' },
+  { label:'Fix cookies: sesi&oacute;n entre tiendas', sub:'En curso &mdash; Francisco + Santiago', start:new Date('2025-04-14'), end:new Date('2025-05-05'), status:'progress', text:'En curso' },
+  { label:'Acceso multi-sitio',      sub:'Clientes portales &mdash; Francisco',            start:new Date('2025-05-12'), end:new Date('2025-05-19'), status:'pending',  text:'Pendiente' },
+  { label:'Dise&ntilde;o frontend (login + regiones)', sub:'En ajustes &mdash; Leo',                      start:new Date('2025-04-07'), end:new Date('2025-05-05'), status:'progress', text:'En ajustes' },
+  { label:'Vincular tiendas + distribuidoras', sub:'Backend + cat&aacute;logo &mdash; Leo',              start:new Date('2025-04-21'), end:new Date('2025-05-09'), status:'progress', text:'En progreso' },
+  { label:'Fix cookies: sesi&oacute;n', sub:'En curso &mdash; Francisco + Santiago',                    start:new Date('2025-04-14'), end:new Date('2025-05-05'), status:'progress', text:'En curso' },
+  { label:'Actualizar datos reales', sub:'6 empresas + regiones &mdash; Leo',                            start:new Date('2025-04-28'), end:new Date('2025-05-09'), status:'blocked',  text:'Pendiente Leo' },
+  { label:'Quitar warnings dev',     sub:'Banners naranjas &mdash; Leo',                                 start:new Date('2025-04-28'), end:new Date('2025-05-05'), status:'blocked',  text:'Por confirmar' },
+  { label:'Registro + Partner (res.partner)', sub:'Login con registro &mdash; Leo',                     start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending',  text:'Sem. 5 may' },
+  { label:'Visibilidad localidades + tiendas', sub:'Pantalla selecci&oacute;n tras login &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending', text:'Sem. 5 may' },
+  { label:'L&oacute;gica acceso por distribuidor', sub:'Campo aprobaci&oacute;n por dist. &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending',  text:'Sem. 5 may' },
+  { label:'M&oacute;dulo documentos (RIF, etc.)', sub:'Vinculado al contacto &mdash; Leo',              start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending',  text:'Sem. 5 may' },
+  { label:'Aprobaci&oacute;n + cat&aacute;logo por almac&eacute;n', sub:'Filtrado por warehouse &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending', text:'Sem. 5 may' },
+  { label:'Perfil usuario + docs actualizables', sub:'Visualizar y renovar docs &mdash; Leo',           start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending',  text:'Sem. 5 may' },
+  { label:'Gesti&oacute;n carrito por distribuidor', sub:'Pedidos independientes &mdash; Leo + V.Rojas',start:new Date('2025-05-09'), end:new Date('2025-05-16'), status:'pending',  text:'Sem. 9 may' },
+  { label:'Deploy final ambas apps', sub:'~1 sem. tras completar backend',                              start:new Date('2025-05-19'), end:new Date('2025-05-23'), status:'pending',  text:'~19 may' }
+];
+
+function days(a,b){ return Math.round((b-a)/86400000); }
+var total = days(START, END);
+function pct(d){ return d ? Math.max(0,Math.min(100,days(START,d)/total*100)) : null; }
+var todayP = pct(TODAY);
+
+var cols=[], cd=new Date(START);
+while(cd<=END){ cols.push(new Date(cd)); cd.setDate(cd.getDate()+7); }
+cols.push(new Date(END));
+
+var mo=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function fmt(d){ return d.getDate()+' '+mo[d.getMonth()]; }
+
+var wrap=document.getElementById('timeline');
+
+// Header
+var hdr=document.createElement('div'); hdr.className='timeline-header';
+hdr.innerHTML='<div></div><div class="date-cols" id="dcols"></div>';
+wrap.appendChild(hdr);
+var dc=document.getElementById('dcols');
+dc.style.setProperty('--cols',cols.length);
+cols.forEach(function(c){
+  var el=document.createElement('div');
+  el.className='date-label'+(Math.abs(days(c,TODAY))<=3?' today-label':'');
+  el.textContent=fmt(c); dc.appendChild(el);
+});
+
+// Rows
+TASKS.forEach(function(t,i){
+  var row=document.createElement('div');
+  row.className='tl-row';
+  row.style.animationDelay=(0.25+i*0.07)+'s';
+
+  var lbl=document.createElement('div');
+  lbl.className='row-label';
+  lbl.innerHTML=t.label+'<small>'+t.sub+'</small>';
+  row.appendChild(lbl);
+
+  var area=document.createElement('div'); area.className='bar-area';
+
+  cols.forEach(function(c,ci){
+    var gl=document.createElement('div'); gl.className='grid-line';
+    gl.style.left=(ci/(cols.length-1)*100)+'%'; area.appendChild(gl);
+  });
+
+  var tl=document.createElement('div');
+  tl.className='grid-line today-line';
+  tl.style.cssText='left:'+todayP+'%;position:absolute;top:0;bottom:0;';
+  if(i===0){
+    var b=document.createElement('div'); b.className='today-badge'; b.textContent='hoy'; tl.appendChild(b);
+  }
+  area.appendChild(tl);
+
+  var bar=document.createElement('div');
+  bar.style.animationDelay=(0.35+i*0.07)+'s';
+
+  if(t.status==='done'||t.status==='progress'){
+    var bs=pct(t.start), be=pct(t.end);
+    bar.className='bar '+t.status;
+    bar.style.left=bs+'%';
+    bar.style.width=Math.max(be-bs,5)+'%';
+    var dot=document.createElement('div');
+    dot.className=t.status==='progress'?'pulse':'dot';
+    if(t.status==='done') dot.style.background='var(--done-text)';
+    bar.appendChild(dot);
+    bar.innerHTML+=t.text;
+  } else if(t.status==='blocked'){
+    bar.className='bar blocked';
+    bar.style.left=(todayP+1)+'%';
+    bar.style.width=Math.min(26,97-todayP-1)+'%';
+    var dot=document.createElement('div'); dot.className='dot'; dot.style.background='var(--blocked-text)';
+    bar.appendChild(dot); bar.innerHTML+=t.text;
+  } else {
+    bar.className='bar pending';
+    bar.style.left=Math.min(todayP+30,65)+'%';
+    bar.style.width='22%';
+    var dot=document.createElement('div'); dot.className='dot'; dot.style.background='var(--pending-text)';
+    bar.appendChild(dot); bar.innerHTML+=t.text;
+  }
+
+  area.appendChild(bar);
+  row.appendChild(area);
+  wrap.appendChild(row);
+});
+</script>
+</body>
+</html>
