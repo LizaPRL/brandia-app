@@ -22,56 +22,56 @@
 }
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 48px 32px; }
 .container { max-width: 980px; margin: 0 auto; }
-
+ 
 .header { margin-bottom: 40px; opacity: 0; animation: fadeUp 0.5s ease forwards; }
 .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
 .tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: var(--today); background: rgba(10,122,69,0.08); border: 1px solid rgba(10,122,69,0.2); border-radius: 4px; padding: 3px 8px; text-transform: uppercase; }
 h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
 .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
-
+ 
 .summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 36px; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
 .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
 .sc-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
 .sc-value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
 .sc-done { color: var(--done-text); } .sc-progress { color: var(--progress-text); } .sc-blocked { color: var(--blocked-text); } .sc-pending { color: var(--pending-text); }
-
+ 
 .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; }
 .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
 .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-
+ 
 .timeline-wrap { position: relative; }
 .timeline-header { display: grid; grid-template-columns: 215px 1fr; margin-bottom: 6px; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
 .date-cols { display: grid; grid-template-columns: repeat(var(--cols),1fr); }
 .date-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: center; }
 .date-label.today-label { color: var(--today); font-weight: 500; }
-
+ 
 .tl-row { display: grid; grid-template-columns: 215px 1fr; align-items: center; min-height: 54px; border-top: 1px solid var(--border); opacity: 0; animation: fadeUp 0.4s ease forwards; }
 .tl-row:last-child { border-bottom: 1px solid var(--border); }
 .row-label { font-size: 13px; color: #2a2c34; padding: 10px 20px 10px 0; line-height: 1.3; }
 .row-label small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
-
+ 
 .bar-area { position: relative; height: 54px; }
 .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); z-index: 0; }
 .grid-line.today-line { background: rgba(10,122,69,0.3); }
-
+ 
 .bar { position: absolute; top: 50%; transform: translateY(-50%); height: 28px; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 12px; font-weight: 500; white-space: nowrap; z-index: 2; border: 1px solid; cursor: default; transition: filter 0.2s; clip-path: inset(0 100% 0 0); animation: barIn 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
 .bar:hover { filter: brightness(0.95); }
 .bar.done     { background: var(--done-bg);     border-color: var(--done-border);     color: var(--done-text); }
 .bar.progress { background: var(--progress-bg); border-color: var(--progress-border); color: var(--progress-text); }
 .bar.blocked  { background: var(--blocked-bg);  border-color: var(--blocked-border);  color: var(--blocked-text); border-style: dashed; }
 .bar.pending  { background: var(--pending-bg);  border-color: var(--pending-border);  color: var(--pending-text); border-style: dashed; opacity: 0.75; }
-
+ 
 .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--progress-text); margin-right: 7px; flex-shrink: 0; animation: pulse 1.6s ease-in-out infinite; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; }
-
+ 
 .today-badge { position: absolute; top: -20px; left: 0; transform: translateX(-50%); font-family: 'DM Mono', monospace; font-size: 10px; color: var(--today); background: rgba(10,122,69,0.08); border: 1px solid rgba(10,122,69,0.2); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
-
+ 
 .alert-block { margin-top: 28px; padding: 18px 22px; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; display: flex; align-items: flex-start; gap: 16px; opacity: 0; animation: fadeUp 0.5s ease 0.7s forwards; }
 .alert-icon { width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0; background: rgba(240,165,58,0.1); border: 1px solid rgba(240,165,58,0.25); display: flex; align-items: center; justify-content: center; font-size: 16px; }
 .alert-text h3 { font-size: 13px; font-weight: 600; color: var(--blocked-text); margin-bottom: 5px; }
 .alert-text p { font-size: 12px; color: var(--muted); line-height: 1.6; }
 .alert-text b { color: #6b4a00; }
-
+ 
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 @keyframes barIn { to { clip-path: inset(0 0% 0 0); } }
@@ -83,25 +83,25 @@ h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
   <div class="header">
     <div class="header-top"><span class="tag">Brandia</span></div>
     <h1>App Development — Timeline</h1>
-    <p class="subtitle">Hoy: 28 de abril, 2025 &nbsp;&middot;&nbsp; Inicio config apps: 24 de marzo, 2025</p>
+    <p class="subtitle">Hoy: 5 de mayo, 2025 &nbsp;&middot;&nbsp; Inicio config apps: 24 de marzo, 2025</p>
   </div>
-
+ 
   <div class="summary">
     <div class="summary-card"><div class="sc-label">Completado</div><div class="sc-value sc-done">5 / 13</div></div>
-    <div class="summary-card"><div class="sc-label">En progreso</div><div class="sc-value sc-progress">4 / 17</div></div>
-    <div class="summary-card"><div class="sc-label">Bloqueante</div><div class="sc-value sc-blocked">2 / 17</div></div>
-    <div class="summary-card"><div class="sc-label">Pendiente</div><div class="sc-value sc-pending">7 / 17</div></div>
+    <div class="summary-card"><div class="sc-label">En progreso</div><div class="sc-value sc-progress">3 / 18</div></div>
+    <div class="summary-card"><div class="sc-label">Bloqueante</div><div class="sc-value sc-blocked">0 / 18</div></div>
+    <div class="summary-card"><div class="sc-label">Pendiente</div><div class="sc-value sc-pending">7 / 18</div></div>
   </div>
-
+ 
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--done-text)"></div>Listo</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--progress-text)"></div>En progreso</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--blocked-text)"></div>Bloqueante</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--pending-text)"></div>Pendiente</div>
   </div>
-
+ 
   <div class="timeline-wrap" id="timeline"></div>
-
+ 
   <div class="alert-block">
     <div class="alert-icon">&#9888;</div>
     <div class="alert-text">
@@ -112,12 +112,12 @@ h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
     </div>
   </div>
 </div>
-
+ 
 <script>
 var START = new Date('2025-03-24');
-var TODAY = new Date('2025-04-28');
+var TODAY = new Date('2025-05-05');
 var END   = new Date('2025-05-26');
-
+ 
 var TASKS = [
   { label:'Beta Android',            sub:'24 mar &rarr; 28 mar',                    start:new Date('2025-03-24'), end:new Date('2025-03-28'), status:'done',     text:'&#10003; Listo' },
   { label:'Beta iOS',                sub:'28 mar &rarr; 7 abr',                     start:new Date('2025-03-28'), end:new Date('2025-04-14'), status:'done',     text:'&#10003; Lista y subida' },
@@ -129,32 +129,33 @@ var TASKS = [
   { label:'Dise&ntilde;o frontend (login + regiones)', sub:'En ajustes &mdash; Leo',                      start:new Date('2025-04-07'), end:new Date('2025-05-05'), status:'progress', text:'En ajustes' },
   { label:'Vincular tiendas + distribuidoras', sub:'Backend + cat&aacute;logo &mdash; Leo',              start:new Date('2025-04-21'), end:new Date('2025-05-09'), status:'progress', text:'En progreso' },
   { label:'Fix cookies: sesi&oacute;n', sub:'En curso &mdash; Francisco + Santiago',                    start:new Date('2025-04-14'), end:new Date('2025-05-05'), status:'progress', text:'En curso' },
-  { label:'Actualizar datos reales', sub:'6 empresas + regiones &mdash; Leo',                            start:new Date('2025-04-28'), end:new Date('2025-05-09'), status:'blocked',  text:'Pendiente Leo' },
-  { label:'Quitar warnings dev',     sub:'Banners naranjas &mdash; Leo',                                 start:new Date('2025-04-28'), end:new Date('2025-05-05'), status:'blocked',  text:'Por confirmar' },
+  { label:'Gesti&oacute;n ubicaciones / localidades', sub:'Conectado con Odoo &mdash; Leo',              start:new Date('2025-04-21'), end:new Date('2025-05-02'), status:'done',     text:'&#10003; Listo' },
+  { label:'Cat&aacute;logo din&aacute;mico por almac&eacute;n', sub:'Subiendo a staging hoy &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'progress', text:'Hoy' },
   { label:'Registro + Partner (res.partner)', sub:'Login con registro &mdash; Leo',                     start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending',  text:'Sem. 5 may' },
   { label:'Visibilidad localidades + tiendas', sub:'Pantalla selecci&oacute;n tras login &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending', text:'Sem. 5 may' },
   { label:'L&oacute;gica acceso por distribuidor', sub:'Campo aprobaci&oacute;n por dist. &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-09'), status:'pending',  text:'Sem. 5 may' },
-  { label:'M&oacute;dulo documentos (RIF, etc.)', sub:'Vinculado al contacto &mdash; Leo',              start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending',  text:'Sem. 5 may' },
-  { label:'Aprobaci&oacute;n + cat&aacute;logo por almac&eacute;n', sub:'Filtrado por warehouse &mdash; Leo', start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending', text:'Sem. 5 may' },
-  { label:'Perfil usuario + docs actualizables', sub:'Visualizar y renovar docs &mdash; Leo',           start:new Date('2025-05-05'), end:new Date('2025-05-12'), status:'pending',  text:'Sem. 5 may' },
-  { label:'Gesti&oacute;n carrito por distribuidor', sub:'Pedidos independientes &mdash; Leo + V.Rojas',start:new Date('2025-05-09'), end:new Date('2025-05-16'), status:'pending',  text:'Sem. 9 may' },
+  { label:'M&oacute;dulo documentos + aprobaciones', sub:'Implementado en Odoo &mdash; Leo',            start:new Date('2025-04-21'), end:new Date('2025-05-02'), status:'done',     text:'&#10003; Listo' },
+  { label:'Ficha contacto + permisos especiales', sub:'Aprobaci&oacute;n directa implementada &mdash; Leo', start:new Date('2025-04-28'), end:new Date('2025-05-05'), status:'done', text:'&#10003; Listo' },
+  { label:'Perfil usuario + docs actualizables', sub:'Docs vinculados al contacto &mdash; Leo',         start:new Date('2025-04-28'), end:new Date('2025-05-05'), status:'done',     text:'&#10003; Listo' },
+  { label:'Balance y checkout', sub:'Flujo completo de compra &mdash; Leo',                             start:new Date('2025-05-09'), end:new Date('2025-05-16'), status:'pending',  text:'Pr&oacute;x. reuni&oacute;n' },
+  { label:'Gesti&oacute;n carrito por distribuidor', sub:'Pedidos independientes &mdash; Leo + V.Rojas', start:new Date('2025-05-09'), end:new Date('2025-05-16'), status:'pending', text:'Sem. 9 may' },
   { label:'Deploy final ambas apps', sub:'~1 sem. tras completar backend',                              start:new Date('2025-05-19'), end:new Date('2025-05-23'), status:'pending',  text:'~19 may' }
 ];
-
+ 
 function days(a,b){ return Math.round((b-a)/86400000); }
 var total = days(START, END);
 function pct(d){ return d ? Math.max(0,Math.min(100,days(START,d)/total*100)) : null; }
 var todayP = pct(TODAY);
-
+ 
 var cols=[], cd=new Date(START);
 while(cd<=END){ cols.push(new Date(cd)); cd.setDate(cd.getDate()+7); }
 cols.push(new Date(END));
-
+ 
 var mo=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 function fmt(d){ return d.getDate()+' '+mo[d.getMonth()]; }
-
+ 
 var wrap=document.getElementById('timeline');
-
+ 
 // Header
 var hdr=document.createElement('div'); hdr.className='timeline-header';
 hdr.innerHTML='<div></div><div class="date-cols" id="dcols"></div>';
@@ -166,25 +167,25 @@ cols.forEach(function(c){
   el.className='date-label'+(Math.abs(days(c,TODAY))<=3?' today-label':'');
   el.textContent=fmt(c); dc.appendChild(el);
 });
-
+ 
 // Rows
 TASKS.forEach(function(t,i){
   var row=document.createElement('div');
   row.className='tl-row';
   row.style.animationDelay=(0.25+i*0.07)+'s';
-
+ 
   var lbl=document.createElement('div');
   lbl.className='row-label';
   lbl.innerHTML=t.label+'<small>'+t.sub+'</small>';
   row.appendChild(lbl);
-
+ 
   var area=document.createElement('div'); area.className='bar-area';
-
+ 
   cols.forEach(function(c,ci){
     var gl=document.createElement('div'); gl.className='grid-line';
     gl.style.left=(ci/(cols.length-1)*100)+'%'; area.appendChild(gl);
   });
-
+ 
   var tl=document.createElement('div');
   tl.className='grid-line today-line';
   tl.style.cssText='left:'+todayP+'%;position:absolute;top:0;bottom:0;';
@@ -192,10 +193,10 @@ TASKS.forEach(function(t,i){
     var b=document.createElement('div'); b.className='today-badge'; b.textContent='hoy'; tl.appendChild(b);
   }
   area.appendChild(tl);
-
+ 
   var bar=document.createElement('div');
   bar.style.animationDelay=(0.35+i*0.07)+'s';
-
+ 
   if(t.status==='done'||t.status==='progress'){
     var bs=pct(t.start), be=pct(t.end);
     bar.className='bar '+t.status;
@@ -219,7 +220,7 @@ TASKS.forEach(function(t,i){
     var dot=document.createElement('div'); dot.className='dot'; dot.style.background='var(--pending-text)';
     bar.appendChild(dot); bar.innerHTML+=t.text;
   }
-
+ 
   area.appendChild(bar);
   row.appendChild(area);
   wrap.appendChild(row);
